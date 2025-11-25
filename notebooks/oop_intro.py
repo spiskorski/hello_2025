@@ -19,11 +19,14 @@
 # %% [markdown]
 # **Task** Implement  a class `ComplexNumber` describing complex numbers. It should have methods `__add__` (addition), `__mul__` (multiplication), `__abs__` (module of the complex number), _n_-th root
 
-# %%
+# %% jupyter={"outputs_hidden": true}
 # %load_ext nb_mypy
 
 # %%
 import math
+
+
+# %%
 class ComplexNumber:
     def __init__(self, re: float, im: float):
         self.re = re
@@ -35,14 +38,14 @@ class ComplexNumber:
         else:
             return f"{self.re} + {self.im}i"
         
-    def __add__(self, other: ComplexNumber) -> ComplexNumber:
+    def __add__(self, other: "ComplexNumber") -> "ComplexNumber":
         if not isinstance(other, ComplexNumber):
             raise ValueError("The second argument should be complex number")
-        
-        return ComplexNumber(self.re + other.re, self.im + other.im)
-        #return 7
 
-    def __mul__(self, other: ComplexNumber) -> ComplexNumber:
+        return type(self)(self.re + other.re, self.im + other.im)
+        #return ComplexNumber(self.re + other.re, self.im + other.im)
+
+    def __mul__(self, other: "ComplexNumber") -> "ComplexNumber":
         return ComplexNumber(self.re * other.re - self.im * other.im, self.re * other.im + self.im * other.re)
 
     def __abs__(self) -> float:
@@ -55,7 +58,7 @@ class ComplexNumber:
     def angle(self):
         return math.atan2(self.im, self.re)
     
-    def nth_root(self, n):
+    def nth_root(self, n) -> list:
         roots = []
         r = abs(self)
 
@@ -63,33 +66,32 @@ class ComplexNumber:
             #theta = 0
         #else:
             #theta = 2 * math.atan( y / (math.sqrt(x**2 + y**2) + x) )
-
         theta = self.angle
-        
+        starting_angle = theta / n
         root_r = r ** (1/n)
-
-        for k in range(n):
-            angle = (theta + 2 * math.pi * k) / n
-            re = root_r * math.cos(angle)
-            im = root_r * math.sin(angle)
-            roots.append(ComplexNumber(re, im))
-
+        angels = [starting_angle + 2 * math.pi * k / n for k in range(n)]
+        roots = [ComplexNumber(root_r * math.cos(angle), root_r * math.sin(angle)) for angle in angels]
         return roots
 
-a = ComplexNumber(1, -1)
-b = ComplexNumber(2, 4)
 
 # %%
-print(a * b)
-print(a + b)
-print(abs(a))
-print(a.nth_root(2))
+class RealNumber(ComplexNumber):
+    
+    def __init__(self, value: float, im = 0):
+        super().__init__(re = value, im = 0)
+
+    def __add__():
+        pass
+
 
 # %%
-a + "hnjhf"
+x1 = RealNumber(3)
 
 # %%
-a.angle
+x2 = RealNumber(4)
 
 # %%
-a.re = 0
+type(x1 + x2)
+
+# %%
+RealNumber(-3).angle
