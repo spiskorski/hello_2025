@@ -2,3 +2,5 @@ numpy
 pandas
 jupyter
 jupytext
+dvc
+dvc-ssh
